@@ -60,10 +60,11 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/green"
                         android:textSize="56sp"
-                        android:textStyle="bold"
                         android:fontFamily="@font/digital"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvLevelLabel" />
+                        app:layout_constraintTop_toBottomOf="@id/tvLevelLabel"
+                        />
 
                     <ImageView
                         android:id="@+id/batteryIconLarge"
@@ -240,10 +241,6 @@
                 </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

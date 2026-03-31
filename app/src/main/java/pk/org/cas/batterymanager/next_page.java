@@ -28,6 +28,7 @@ public class next_page extends AppCompatActivity {
 
 
 
+
     BroadcastReceiver batteryBroadcastRecevier = new BroadcastReceiver() {
         @SuppressLint("SetTextI18n")
         @Override
@@ -36,14 +37,17 @@ public class next_page extends AppCompatActivity {
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE,100);
 
             int batteryPct = (int) ((level * 100) / (float) scale);
+
             batteryIconLarge.setImageLevel(batteryPct);
 
-            batteryLevelValue.setText(Integer.toString(level)+"%");
-            if (batteryPct>=60){
-                    batteryIconLarge.setColorFilter(Color.GREEN);
-            } else if (batteryPct>=20) {
+            batteryLevelValue.setText(Integer.toString(batteryPct) + "%");
+
+            int color;
+            if (batteryPct >= 60) {
+                batteryIconLarge.setColorFilter(Color.GREEN);
+            } else if (batteryPct >= 20) {
                 batteryIconLarge.setColorFilter(Color.YELLOW);
-            }else {
+            } else {
                 batteryIconLarge.setColorFilter(Color.RED);
             }
         }
@@ -144,12 +148,24 @@ public class next_page extends AppCompatActivity {
         batteryType = findViewById(R.id.batteryType);
         status = findViewById(R.id.status);
 
-        registerReceiver(batteryBroadcastRecevier,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        registerReceiver(batteryTemperature,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        registerReceiver(batteryVoltage,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        registerReceiver(batteryHealth,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        registerReceiver(batteryTypeReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        registerReceiver(batteryStatus,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(batteryBroadcastRecevier, filter);
+        registerReceiver(batteryTemperature, filter);
+        registerReceiver(batteryVoltage, filter);
+        registerReceiver(batteryHealth, filter);
+        registerReceiver(batteryTypeReceiver, filter);
+        registerReceiver(batteryStatus, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(batteryBroadcastRecevier);
+        unregisterReceiver(batteryTemperature);
+        unregisterReceiver(batteryVoltage);
+        unregisterReceiver(batteryHealth);
+        unregisterReceiver(batteryTypeReceiver);
+        unregisterReceiver(batteryStatus);
     }
 }
