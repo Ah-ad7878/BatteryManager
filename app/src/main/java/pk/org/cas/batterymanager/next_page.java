@@ -44,7 +44,7 @@ public class next_page extends AppCompatActivity {
 
             int color;
             if (batteryPct >= 60) {
-                batteryIconLarge.setColorFilter(Color.GREEN);
+                batteryIconLarge.setColorFilter(Color.parseColor("#049941"));
             } else if (batteryPct >= 20) {
                 batteryIconLarge.setColorFilter(Color.YELLOW);
             } else {
