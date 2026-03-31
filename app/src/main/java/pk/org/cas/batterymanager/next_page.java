@@ -21,7 +21,7 @@ public class next_page extends AppCompatActivity {
     TextView batteryLevelValue;
     TextView temperature;
     TextView health;
-
+    TextView status;
     TextView batteryType;
     TextView voltage;
     ImageView batteryIconLarge;
@@ -104,6 +104,33 @@ public class next_page extends AppCompatActivity {
         }
     };
 
+    BroadcastReceiver batteryStatus = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status1 = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+            String status2;
+
+            switch (status1) {
+                case BatteryManager.BATTERY_STATUS_CHARGING:
+                    status2 = "Charging";
+                    break;
+                case BatteryManager.BATTERY_STATUS_DISCHARGING:
+                    status2 = "Discharging";
+                    break;
+                case BatteryManager.BATTERY_STATUS_FULL:
+                    status2 = "Full";
+                    break;
+                case BatteryManager.BATTERY_STATUS_NOT_CHARGING:
+                    status2 = "Not Charging";
+                    break;
+                default:
+                    status2 = "Unknown";
+            }
+
+            status.setText(status2);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,12 +142,14 @@ public class next_page extends AppCompatActivity {
         voltage = findViewById(R.id.voltage);
         health = findViewById(R.id.health);
         batteryType = findViewById(R.id.batteryType);
+        status = findViewById(R.id.status);
 
         registerReceiver(batteryBroadcastRecevier,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryTemperature,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryVoltage,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryHealth,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryTypeReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(batteryStatus,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
     }
 }
