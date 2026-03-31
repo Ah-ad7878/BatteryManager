@@ -21,6 +21,8 @@ public class next_page extends AppCompatActivity {
     TextView batteryLevelValue;
     TextView temperature;
     TextView health;
+
+    TextView batteryType;
     TextView voltage;
     ImageView batteryIconLarge;
 
@@ -94,6 +96,14 @@ public class next_page extends AppCompatActivity {
         }
     };
 
+    BroadcastReceiver batteryTypeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String type = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
+            batteryType.setText(type);
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,11 +114,13 @@ public class next_page extends AppCompatActivity {
         temperature = findViewById(R.id.temperature);
         voltage = findViewById(R.id.voltage);
         health = findViewById(R.id.health);
+        batteryType = findViewById(R.id.batteryType);
 
         registerReceiver(batteryBroadcastRecevier,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryTemperature,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryVoltage,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         registerReceiver(batteryHealth,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(batteryTypeReceiver,new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
     }
 }
