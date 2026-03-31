@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">BatteryManager</string>
+    <string name="battery_manager">Battery Manager</string>
+    <string name="next_page">next page</string>
+    <string name="battery_info">Battery Info</string>
+    <string name="charging_via_usb">Charging via USB</string>
+    <string name="_85">85%</string>
+    <string name="current_level">Current Level</string>
+    <string name="battery_icon">battery_icon</string>
+    <string name="temperature">Temperature</string>
+    <string name="_35_c">35°C</string>
+    <string name="voltage">Voltage</string>
+    <string name="_3_7v">3.7V</string>
+    <string name="health">Health</string>
+    <string name="excellent">Excellent</string>
+    <string name="technology">Technology</string>
+    <string name="li_ion">Li-ion</string>
+    <string name="percent_sign">%</string>
+</resources>
