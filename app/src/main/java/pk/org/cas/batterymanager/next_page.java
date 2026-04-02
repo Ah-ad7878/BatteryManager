@@ -1,19 +1,34 @@
 package pk.org.cas.batterymanager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+
+import java.security.Permission;
 
 
 public class next_page extends AppCompatActivity {
@@ -26,10 +41,10 @@ public class next_page extends AppCompatActivity {
     TextView voltage;
     ImageView batteryIconLarge;
 
-
-
+    public String channelId = "Default";
 
     BroadcastReceiver batteryBroadcastRecevier = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
         @SuppressLint("SetTextI18n")
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -50,16 +65,36 @@ public class next_page extends AppCompatActivity {
             } else {
                 batteryIconLarge.setColorFilter(Color.RED);
             }
+
+            if (batteryPct == 100){
+                notificatioBuilder("Battery Full Charged");
+            } else if (batteryPct == 50) {
+                notificatioBuilder("You use half battery of your mobile");
+            } else if (batteryPct == 20) {
+                notificatioBuilder("please connect your mobile with charging");
+            } else if (batteryPct == 1) {
+                notificatioBuilder("your mobile is dead");
+            }
+
         }
     };
 
     BroadcastReceiver batteryTemperature = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
         @SuppressLint("SetTextI18n")
         @Override
         public void onReceive(Context context, Intent intent) {
             int temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE,0);
             float temperatureC = temp / 10f;
             temperature.setText(temperatureC+"°C");
+
+            if (temperatureC <= 50){
+                notificatioBuilder("Your mobile is over heat and temperature is"+temperatureC);
+            } else if (temperatureC >= 40) {
+                notificatioBuilder("your mobile is in good temperature and temperature"+temperatureC);
+            } else {
+                notificatioBuilder("your mobile temperature is cold and temperature"+temperatureC);
+            }
         }
     };
 
@@ -109,6 +144,7 @@ public class next_page extends AppCompatActivity {
     };
 
     BroadcastReceiver batteryStatus = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
         @Override
         public void onReceive(Context context, Intent intent) {
             int status1 = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
@@ -117,9 +153,11 @@ public class next_page extends AppCompatActivity {
             switch (status1) {
                 case BatteryManager.BATTERY_STATUS_CHARGING:
                     status2 = "Charging";
+                    notificatioBuilder("Your mobile is connect with a charger");
                     break;
                 case BatteryManager.BATTERY_STATUS_DISCHARGING:
                     status2 = "Discharging";
+                    notificatioBuilder("your mobile disconnected from charger");
                     break;
                 case BatteryManager.BATTERY_STATUS_FULL:
                     status2 = "Full";
@@ -131,10 +169,13 @@ public class next_page extends AppCompatActivity {
                     status2 = "Unknown";
             }
 
+
+
             status.setText(status2);
         }
     };
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +197,8 @@ public class next_page extends AppCompatActivity {
         registerReceiver(batteryHealth, filter);
         registerReceiver(batteryTypeReceiver, filter);
         registerReceiver(batteryStatus, filter);
+
+        createNotificationChannel();
     }
 
     @Override
@@ -167,5 +210,35 @@ public class next_page extends AppCompatActivity {
         unregisterReceiver(batteryHealth);
         unregisterReceiver(batteryTypeReceiver);
         unregisterReceiver(batteryStatus);
+    }
+
+    @SuppressLint("ObsoleteSdkInt")
+    private void createNotificationChannel() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Battery Channel",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    public void notificatioBuilder(String message) {
+        Notification notification = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_battery)
+                .setContentTitle("Battery Manager")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            return;
+        }
+        notificationManager.notify(1, notification);
     }
 }
