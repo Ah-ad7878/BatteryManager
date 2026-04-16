@@ -150,6 +150,17 @@ public class BatteryServices extends Service {
                 editor.putString("type", type);
                 editor.putString("status", status2);
                 editor.apply();
+
+
+                Intent updateIntent = new Intent("BATTERY_DATA");
+                updateIntent.setPackage(getPackageName());
+                updateIntent.putExtra("level", batteryPct);
+                updateIntent.putExtra("temperature", temperatureC);
+                updateIntent.putExtra("voltage", voltage);
+                updateIntent.putExtra("health", healthStatus);
+                updateIntent.putExtra("type", type);
+                updateIntent.putExtra("status", status2);
+                sendBroadcast(updateIntent);
             }
         };
 
