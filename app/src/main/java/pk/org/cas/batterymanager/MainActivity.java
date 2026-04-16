@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 navigateToNextPage();
             } else {
                 Toast.makeText(this, "Notification permission is required for alerts", Toast.LENGTH_SHORT).show();
-                // We still navigate because the user might just want to see the UI
                 navigateToNextPage();
             }
         }
