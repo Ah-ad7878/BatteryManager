@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.BatteryManager;
 import android.os.Build;
@@ -19,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class BatteryServices extends Service {
 
@@ -39,14 +41,6 @@ public class BatteryServices extends Service {
 
         createNotificationChannel();
 
-        // START FOREGROUND ONCE
-        Notification serviceNotification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_battery)
-                .setContentTitle("Battery Manager")
-                .setContentText("Monitoring battery...")
-                .build();
-
-        startForeground(1, serviceNotification);
 
         batteryReceiver = new BroadcastReceiver() {
             @Override
@@ -146,16 +140,16 @@ public class BatteryServices extends Service {
                     isTempHigh = true;
                     isTempNormal = false;
                 }
-                
-                Intent i = new Intent("BATTERY_DATA");
-                i.putExtra("level", batteryPct);
-                i.putExtra("temperature", temperatureC);
-                i.putExtra("voltage", voltage);
-                i.putExtra("health", healthStatus);
-                i.putExtra("type", type);
-                i.putExtra("status", status2);
 
-                sendBroadcast(i);
+                SharedPreferences prefs = getSharedPreferences("BatteryPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("level", batteryPct);
+                editor.putFloat("temperature", temperatureC);
+                editor.putFloat("voltage", voltage);
+                editor.putString("health", healthStatus);
+                editor.putString("type", type);
+                editor.putString("status", status2);
+                editor.apply();
             }
         };
 
@@ -199,8 +193,8 @@ public class BatteryServices extends Service {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 == PackageManager.PERMISSION_GRANTED) {
-
-            manager.notify((int) System.currentTimeMillis(), notification);
+            startForeground(1, notification);
+            manager.notify(1, notification);
         }
     }
 }

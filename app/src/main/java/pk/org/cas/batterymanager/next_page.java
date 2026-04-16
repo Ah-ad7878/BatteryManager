@@ -1,71 +1,63 @@
 package pk.org.cas.batterymanager;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.BatteryManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-
 
 public class next_page extends AppCompatActivity {
 
-    TextView batteryLevelValue,temperature,status,voltage,health,technology;
-    private BroadcastReceiver batteryReceiver;
+    TextView batteryLevelValue, temperature, voltage, batteryType, health, status;
+    ImageView batteryIconLarge;
 
-    @SuppressLint("MissingInflatedId")
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_next_page);
 
         batteryLevelValue = findViewById(R.id.batteryLevelValue);
         temperature = findViewById(R.id.temperature);
-        status = findViewById(R.id.status);
         voltage = findViewById(R.id.voltage);
+        batteryType = findViewById(R.id.batteryType);
         health = findViewById(R.id.health);
-        technology = findViewById(R.id.batteryType);
+        status = findViewById(R.id.status);
+        batteryIconLarge = findViewById(R.id.batteryIconLarge);
 
-        batteryReceiver = new BroadcastReceiver() {
-            @SuppressLint({"SetTextI18n", "UnspecifiedRegisterReceiverFlag"})
-            @Override
-            public void onReceive(Context context, Intent intent) {
+        loadBatteryData();
+    }
 
-                int level = intent.getIntExtra("level", 0);
-                float temp = intent.getFloatExtra("temperature", 0);
-                float volt = intent.getFloatExtra("voltage", 0);
+    @SuppressLint("SetTextI18n")
+    private void loadBatteryData() {
+        SharedPreferences prefs = getSharedPreferences("BatteryPrefs", MODE_PRIVATE);
+        int level = prefs.getInt("level", 0);
+        float temp = prefs.getFloat("temperature", 0);
+        float volt = prefs.getFloat("voltage", 0);
+        String health1 = prefs.getString("health", "Unknown");
+        String type = prefs.getString("type", "Unknown");
+        String status2 = prefs.getString("status", "Unknown");
 
-                String healthStr = intent.getStringExtra("health");
-                String type = intent.getStringExtra("type");
-                String statusStr = intent.getStringExtra("status");
+        batteryLevelValue.setText(level + "%");
+        temperature.setText(temp + "°C");
+        voltage.setText(volt + "V");
+        batteryType.setText(type);
+        health.setText(health1);
+        status.setText(status2);
 
-                batteryLevelValue.setText(level +"%");
-                temperature.setText(temp+"°C");
-                voltage.setText(volt+"V");
-                health.setText(healthStr);
-                status.setText(statusStr);
-                technology.setText(type);
 
-                registerReceiver(batteryReceiver,new IntentFilter("Battery Data"));
-                startService(new Intent(next_page.this, BatteryServices.class));
+        if (batteryIconLarge != null) {
+            batteryIconLarge.setImageLevel(level);
+            if (level >= 60) {
+                batteryIconLarge.setColorFilter(Color.parseColor("#049941"));
+            } else if (level >= 20) {
+                batteryIconLarge.setColorFilter(Color.YELLOW);
+            } else {
+                batteryIconLarge.setColorFilter(Color.RED);
             }
-        };
-
+        }
     }
 }

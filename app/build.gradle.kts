@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
     implementation(libs.mpandroidchart)
     implementation(libs.remote.creation.compose)
     testImplementation(libs.junit)
