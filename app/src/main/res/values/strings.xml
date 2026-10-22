@@ -16,4 +16,6 @@
     <string name="technology">Technology</string>
     <string name="li_ion">Li-ion</string>
     <string name="percent_sign">%</string>
+    <string name="battery_details">BATTERY DETAILS</string>
+    <string name="status_icon">Status Icon</string>
 </resources>

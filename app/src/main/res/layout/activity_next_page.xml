@@ -16,28 +16,35 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Battery Statistics"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/battery_info"
             app:titleTextColor="@color/text_primary" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
 
+            <!-- Hero Battery Level Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/card_bg"
                 app:cardCornerRadius="28dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                app:cardElevation="2dp"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -48,9 +55,12 @@
                         android:id="@+id/tvLevelLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:letterSpacing="0.05"
                         android:text="@string/current_level"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/chart_line"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,56 +68,92 @@
                         android:id="@+id/batteryLevelValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/green"
-                        android:textSize="56sp"
+                        android:layout_marginTop="4dp"
                         android:fontFamily="@font/digital"
+                        android:textColor="@color/green"
+                        android:textSize="64sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvLevelLabel"
-                        />
+                        tools:text="85%" />
 
                     <ImageView
                         android:id="@+id/batteryIconLarge"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
                         android:contentDescription="@string/battery_icon"
+                        android:padding="4dp"
                         android:src="@drawable/ic_battery"
-                        app:layout_constraintBottom_toBottomOf="@id/batteryLevelValue"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/batteryLevelValue" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/status"
+                    <!-- Status Pill Chip -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="16sp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_status_chip"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/batteryLevelValue" />
+                        app:layout_constraintTop_toBottomOf="@id/batteryLevelValue">
 
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginEnd="6dp"
+                            android:contentDescription="@string/status_icon"
+                            android:src="@drawable/ic_status" />
+
+                        <TextView
+                            android:id="@+id/status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="Charging" />
+                    </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Section Header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="12dp"
+                android:letterSpacing="0.08"
+                android:text="@string/battery_details"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <!-- Grid of Cards -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_height="wrap_content">
 
-
+                <!-- Temperature Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardTemp"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="12dp"
                     app:cardBackgroundColor="@color/card_bg"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
+                    app:cardElevation="2dp"
                     app:layout_constraintEnd_toStartOf="@+id/cardVolt"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/card_stroke"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -115,35 +161,55 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/bg_icon_temp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/temperature"
+                                android:src="@drawable/ic_temperature" />
+                        </FrameLayout>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/temperature"
-                            android:textColor="@color/white"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/temperature"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:textColor="@color/text_primary"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="35°C" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Voltage Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardVolt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="12dp"
                     app:cardBackgroundColor="@color/card_bg"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
+                    app:cardElevation="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@id/cardTemp"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/card_stroke"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -151,35 +217,55 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/bg_icon_volt">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/voltage"
+                                android:src="@drawable/ic_voltage" />
+                        </FrameLayout>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/voltage"
-                            android:textColor="@color/white"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/voltage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:textColor="@color/text_primary"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="3.7V" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Health Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardHealth"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginTop="12dp"
                     app:cardBackgroundColor="@color/card_bg"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
+                    app:cardElevation="2dp"
                     app:layout_constraintEnd_toStartOf="@+id/cardTech"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/cardTemp">
+                    app:layout_constraintTop_toBottomOf="@id/cardTemp"
+                    app:strokeColor="@color/card_stroke"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -187,35 +273,55 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/bg_icon_health">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/health"
+                                android:src="@drawable/ic_health" />
+                        </FrameLayout>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/health"
-                            android:textColor="@color/white"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/health"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:textColor="@color/green"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="Good" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Technology Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardTech"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="12dp"
                     app:cardBackgroundColor="@color/card_bg"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
+                    app:cardElevation="2dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@id/cardHealth"
-                    app:layout_constraintTop_toBottomOf="@id/cardVolt">
+                    app:layout_constraintTop_toBottomOf="@id/cardVolt"
+                    app:strokeColor="@color/card_stroke"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -223,20 +329,36 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+                        <FrameLayout
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@drawable/bg_icon_tech">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center"
+                                android:contentDescription="@string/technology"
+                                android:src="@drawable/ic_technology" />
+                        </FrameLayout>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/technology"
-                            android:textColor="@color/white"
+                            android:textColor="@color/text_secondary"
                             android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/batteryType"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
                             android:textColor="@color/text_primary"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            tools:text="Li-ion" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 

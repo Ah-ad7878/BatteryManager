@@ -34,6 +34,11 @@ public class next_page extends AppCompatActivity {
         status = findViewById(R.id.status);
         batteryIconLarge = findViewById(R.id.batteryIconLarge);
 
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setNavigationOnClickListener(v -> finish());
+        }
+
         loadBatteryData();
 
         receiver = new BroadcastReceiver() {
@@ -55,20 +60,31 @@ public class next_page extends AppCompatActivity {
                     health.setText(health1);
                     status.setText(status1);
 
-                    if (batteryIconLarge != null) {
-                        batteryIconLarge.setImageLevel(level);
-
-                        if (level >= 60) {
-                            batteryIconLarge.setColorFilter(Color.GREEN);
-                        } else if (level >= 20) {
-                            batteryIconLarge.setColorFilter(Color.YELLOW);
-                        } else {
-                            batteryIconLarge.setColorFilter(Color.RED);
-                        }
-                    }
+                    updateBatteryLevelAndColor(level);
                 }
             }
         };
+    }
+
+    private void updateBatteryLevelAndColor(int level) {
+        if (batteryIconLarge != null) {
+            batteryIconLarge.setImageLevel(level * 100);
+
+            int color;
+            if (level >= 60) {
+                color = Color.parseColor("#10B981"); // Green for high level
+            } else if (level >= 20) {
+                color = Color.parseColor("#F59E0B"); // Yellow/Orange for medium level
+            } else {
+                color = Color.parseColor("#EF4444"); // Red for low level
+            }
+
+            batteryIconLarge.setColorFilter(color);
+
+            if (batteryLevelValue != null) {
+                batteryLevelValue.setTextColor(color);
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -88,6 +104,8 @@ public class next_page extends AppCompatActivity {
         batteryType.setText(type);
         health.setText(health1);
         status.setText(status1);
+
+        updateBatteryLevelAndColor(level);
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
