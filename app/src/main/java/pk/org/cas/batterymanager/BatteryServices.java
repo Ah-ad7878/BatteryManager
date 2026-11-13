@@ -55,7 +55,7 @@ public class BatteryServices extends Service {
                 int temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
                 float temperatureC = temp / 10f;
 
-                // ⚡ Voltage
+                // Voltage
                 int voltage1 = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
                 float voltage = voltage1 / 1000f;
 
